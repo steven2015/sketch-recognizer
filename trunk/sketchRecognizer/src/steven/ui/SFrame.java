@@ -2,7 +2,6 @@ package steven.ui;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -44,24 +43,22 @@ public abstract class SFrame extends JFrame implements WindowListener, WindowFoc
 					case MouseEvent.BUTTON1:
 						if(leftButtonPressed){
 							leftButtonPressed = false;
-							mouseUp(event,MouseEvent.BUTTON1,event.getX(),event.getY(),false,middleButtonPressed,rightButtonPressed);
+							mouseUp(event,MouseEvent.BUTTON1,event.getX(),event.getY());
 						}
 						break;
 					case MouseEvent.BUTTON2:
 						if(middleButtonPressed){
 							middleButtonPressed = false;
-							mouseUp(event,MouseEvent.BUTTON2,event.getX(),event.getY(),leftButtonPressed,false,rightButtonPressed);
+							mouseUp(event,MouseEvent.BUTTON2,event.getX(),event.getY());
 						}
 						break;
 					case MouseEvent.BUTTON3:
 						if(rightButtonPressed){
 							rightButtonPressed = false;
-							mouseUp(event,MouseEvent.BUTTON3,event.getX(),event.getY(),leftButtonPressed,middleButtonPressed,false);
+							mouseUp(event,MouseEvent.BUTTON3,event.getX(),event.getY());
 						}
 						break;
 				}
-				mouseUp(event,event.getButton(),event.getX(),event.getY(),(event.getModifiersEx() | InputEvent.BUTTON1_DOWN_MASK) > 0,(event.getModifiersEx() | InputEvent.BUTTON2_DOWN_MASK) > 0,
-						(event.getModifiersEx() | InputEvent.BUTTON3_DOWN_MASK) > 0);
 			}
 			@Override
 			public void mousePressed(final MouseEvent event){
@@ -69,19 +66,19 @@ public abstract class SFrame extends JFrame implements WindowListener, WindowFoc
 					case MouseEvent.BUTTON1:
 						if(leftButtonPressed == false){
 							leftButtonPressed = true;
-							mouseDown(event,MouseEvent.BUTTON1,event.getX(),event.getY(),true,middleButtonPressed,rightButtonPressed);
+							mouseDown(event,MouseEvent.BUTTON1,event.getX(),event.getY());
 						}
 						break;
 					case MouseEvent.BUTTON2:
 						if(middleButtonPressed == false){
 							middleButtonPressed = true;
-							mouseDown(event,MouseEvent.BUTTON2,event.getX(),event.getY(),leftButtonPressed,true,rightButtonPressed);
+							mouseDown(event,MouseEvent.BUTTON2,event.getX(),event.getY());
 						}
 						break;
 					case MouseEvent.BUTTON3:
 						if(rightButtonPressed == false){
 							rightButtonPressed = true;
-							mouseDown(event,MouseEvent.BUTTON3,event.getX(),event.getY(),leftButtonPressed,middleButtonPressed,true);
+							mouseDown(event,MouseEvent.BUTTON3,event.getX(),event.getY());
 						}
 						break;
 				}
@@ -90,15 +87,15 @@ public abstract class SFrame extends JFrame implements WindowListener, WindowFoc
 			public void mouseExited(final MouseEvent event){
 				if(leftButtonPressed){
 					leftButtonPressed = false;
-					mouseUp(event,MouseEvent.BUTTON1,event.getX(),event.getY(),false,middleButtonPressed,rightButtonPressed);
+					mouseUp(event,MouseEvent.BUTTON1,event.getX(),event.getY());
 				}
 				if(middleButtonPressed){
 					middleButtonPressed = false;
-					mouseUp(event,MouseEvent.BUTTON2,event.getX(),event.getY(),leftButtonPressed,false,rightButtonPressed);
+					mouseUp(event,MouseEvent.BUTTON2,event.getX(),event.getY());
 				}
 				if(rightButtonPressed){
 					rightButtonPressed = false;
-					mouseUp(event,MouseEvent.BUTTON3,event.getX(),event.getY(),leftButtonPressed,middleButtonPressed,false);
+					mouseUp(event,MouseEvent.BUTTON3,event.getX(),event.getY());
 				}
 			}
 			@Override
@@ -109,17 +106,17 @@ public abstract class SFrame extends JFrame implements WindowListener, WindowFoc
 			}
 			@Override
 			public void mouseClicked(final MouseEvent event){
-				mouseClick(event,event.getButton(),event.getX(),event.getY(),leftButtonPressed,middleButtonPressed,rightButtonPressed);
+				mouseClick(event,event.getButton(),event.getX(),event.getY());
 			}
 		});
 		addMouseMotionListener(new MouseMotionListener(){
 			@Override
 			public void mouseMoved(final MouseEvent event){
-				mouseMove(event,event.getX(),event.getY(),false,false,false);
+				mouseMove(event,event.getX(),event.getY());
 			}
 			@Override
 			public void mouseDragged(final MouseEvent event){
-				mouseMove(event,event.getX(),event.getY(),leftButtonPressed,middleButtonPressed,rightButtonPressed);
+				mouseMove(event,event.getX(),event.getY());
 			}
 		});
 	}
@@ -177,13 +174,13 @@ public abstract class SFrame extends JFrame implements WindowListener, WindowFoc
 	@Override
 	public void keyReleased(final KeyEvent event){
 	}
-	protected void mouseDown(final MouseEvent event, final int button, final int x, final int y, final boolean leftButtonDown, final boolean middleButtonDown, final boolean rightButtonDown){
+	protected void mouseDown(final MouseEvent event, final int button, final int x, final int y){
 	}
-	protected void mouseUp(final MouseEvent event, final int button, final int x, final int y, final boolean leftButtonDown, final boolean middleButtonDown, final boolean rightButtonDown){
+	protected void mouseUp(final MouseEvent event, final int button, final int x, final int y){
 	}
-	protected void mouseClick(final MouseEvent event, final int button, final int x, final int y, final boolean leftButtonDown, final boolean middleButtonDown, final boolean rightButtonDown){
+	protected void mouseClick(final MouseEvent event, final int button, final int x, final int y){
 	}
-	protected void mouseMove(final MouseEvent event, final int x, final int y, final boolean leftButtonDown, final boolean middleButtonDown, final boolean rightButtonDown){
+	protected void mouseMove(final MouseEvent event, final int x, final int y){
 	}
 	@Override
 	public final void paint(final Graphics g){
