@@ -16,6 +16,7 @@ package terrence.recognizer.interaction.dollar;
  *
  */
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Vector;
 
@@ -95,6 +96,9 @@ public class Dollar implements TouchListener
 			return;
 		
 		result = recognizer.Recognize(points);		
+		// steven 20111120 remove lines after recognize start
+		points.clear();
+		// steven 20111120 remove lines after recognize end
 //		points.removeAllElements();
 		
 		if (listener != null)
@@ -163,7 +167,8 @@ public class Dollar implements TouchListener
 		result.Score = 0;
 		result.Index = -1;
 	}
+	public Result getResult(){
+		return result;
+	}
 	
 }
-
-

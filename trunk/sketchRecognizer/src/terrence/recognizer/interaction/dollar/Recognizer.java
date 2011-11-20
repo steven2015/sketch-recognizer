@@ -115,6 +115,9 @@ public class Recognizer
 		
 		int t = 0;
 		
+		// steven 20111120 best angle start
+		double bestAngle = 0;
+		// steven 20111120 best angle end
 		double b = Double.MAX_VALUE;
 		for (int i = 0; i < Templates.size(); i++)
 		{
@@ -123,10 +126,15 @@ public class Recognizer
 			{
 				b = d;
 				t = i;
+				// steven 20111120 best angle start
+				bestAngle = Utils.bestAngle;
+				// steven 20111120 best angle end
 			}
 		}
 		double score = 1.0 - (b / HalfDiagonal);
-		return new Result(((Template)Templates.elementAt(t)).Name, score, t);
+		// steven 20111120 bounding box start
+		return new Result(((Template)Templates.elementAt(t)).Name, score, t, bounds, bestAngle);
+		// steven 20111120 bounding box end
 	};
 
 	int AddTemplate(String name, Vector points)
