@@ -2,13 +2,18 @@ package terrence.ui;
 
 import java.applet.Applet;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import terrence.recognizer.interaction.dollar.Dollar;
 import terrence.recognizer.interaction.dollar.DollarListener;
+import terrence.recognizer.steven.FinalObject;
+import terrence.recognizer.steven.Rectangle;
 
 public class Recognizer extends Applet implements MouseListener, MouseMotionListener, DollarListener {
 	int x;
@@ -22,8 +27,15 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 	
 	Image offScreen;
 	
+	// steven 20111120 save recognized shape start
+	private final List<FinalObject> objects = new ArrayList<FinalObject>();
+	// steven 20111120 save recognized shape end
+	
 	public void init() 
 	{
+		// steven 20111120 development on pc start
+		setSize(800,600);
+		// steven 20111120 development on pc end
 		offScreen = createImage(getSize().width, getSize().height);
 			
 		addMouseListener(this);
@@ -40,7 +52,16 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 	{	}
 	
 	public void mouseClicked(MouseEvent e) //mouse pressed-depressed (no motion in between), if there's motion -> mouseDragged
-	{   }
+	{   
+		// steven 20111120 clear screen with right mouse start
+		if(e.getButton() == MouseEvent.BUTTON3){
+			synchronized(objects){
+				objects.clear();
+			}
+			repaint();
+		}
+		// steven 20111120 clear screen with right mouse end
+	}
 		
 	public void update(MouseEvent e)
 	{	
@@ -53,15 +74,23 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 
 	public void mousePressed(MouseEvent e) 
 	{
-		state = 1;
-		dollar.pointerPressed(e.getX(), e.getY());		
-		update(e);
+		// steven 20111120 draw with left mouse start
+		if(isLeftButtonDown(e)){
+			state = 1;
+			dollar.pointerPressed(e.getX(), e.getY());		
+			update(e);
+		}
+		// steven 20111120 draw with left mouse end
 	}
 	public void mouseReleased(MouseEvent e) 
 	{ 
-		state = 0;
-		dollar.pointerReleased(e.getX(), e.getY());		
-		update(e);
+		// steven 20111120 draw with left mouse start
+		if(e.getButton() == MouseEvent.BUTTON1){
+			state = 0;
+			dollar.pointerReleased(e.getX(), e.getY());		
+			update(e);
+		}
+		// steven 20111120 draw with left mouse end
 	}
 	public void mouseMoved(MouseEvent e) 
 	{  
@@ -70,10 +99,14 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 	}
 	
 	public void mouseDragged(MouseEvent e) 
-	{		
-		state = 2;
-		dollar.pointerDragged(e.getX(), e.getY());				
-		update(e);
+	{	
+		// steven 20111120 draw with left mouse start
+		if(isLeftButtonDown(e)){
+			state = 2;
+			dollar.pointerDragged(e.getX(), e.getY());				
+			update(e);
+		}
+		// steven 20111120 draw with left mouse end
 	}
 	
 	public void update(Graphics g)
@@ -92,8 +125,10 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 	
 	public void paint(Graphics g)
 	{
-		g.drawLine(0, y, getWidth(), y);
-		g.drawLine(x, 0, x, getHeight());
+		// steven 20111120 remove '+' lines start
+		//g.drawLine(0, y, getWidth(), y);
+		//g.drawLine(x, 0, x, getHeight());
+		// steven 20111120 remove '+' lines end
 
 		g.drawString("[" + x + " " + y + "] [" + state + "]", 10, 20);
 
@@ -101,6 +136,14 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 			g.drawString("gesture: " + name + " (" + score + ")", 10, 60);	
 		
 		dollar.render(g);
+		// steven 20111120 save recognized shape start
+		Graphics2D g2d = (Graphics2D)g;
+		synchronized(objects){
+			for(FinalObject obj : objects){
+				obj.render(g2d);
+			}
+		}
+		// steven 20111120 save recognized shape end
 	}
 	
 	public void dollarDetected(Dollar dollar)
@@ -109,5 +152,19 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 		name = dollar.getName();
 		
 		ok = score > 0.80;
+		// steven 20111120 save recognized shape start
+		if(ok){
+			if(name.toLowerCase().startsWith("rectangle")){
+				synchronized(objects){
+					objects.add(new Rectangle(dollar.getResult()));
+				}
+			}
+		}
+		// steven 20111120 save recognized shape end
 	}
+	// steven 20111120 draw with left mouse start
+	private static boolean isLeftButtonDown(final MouseEvent event){
+		return (event.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) > 0;
+	}
+	// steven 20111120 draw with left mouse end
 }

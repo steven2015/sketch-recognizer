@@ -138,6 +138,10 @@ public class Utils
 		return newpoints;
 	}			
 	
+	// steven 20111120 save recognized shape start
+	// a hole !!!
+	public static double bestAngle = 0;
+	// steven 20111120 save recognized shape end
 	public static double DistanceAtBestAngle(Vector points, Template T, double a, double b, double threshold)
 	{
 		double Phi = Recognizer.Phi;
@@ -166,6 +170,14 @@ public class Utils
 				f2 = DistanceAtAngle(points, T, x2);
 			}
 		}
+		// steven 20111120 save recognized shape start
+		// incorrect result !!
+		if(f1 < f2){
+			bestAngle = x1;
+		}else{
+			bestAngle = x2;
+		}
+		// steven 20111120 save recognized shape end
 		return Math.min(f1, f2);
 	}			
 
