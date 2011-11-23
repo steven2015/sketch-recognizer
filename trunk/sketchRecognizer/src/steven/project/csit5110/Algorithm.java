@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Algorithm{
 	private final List<Point2D> points = new ArrayList<Point2D>();
+	private final List<Sample> matches = new ArrayList<Sample>();
 	@Deprecated
 	private Sample sketch;
-	private Sample match;
 
 	public Algorithm(){
 		clearSketch();
@@ -24,7 +24,6 @@ public class Algorithm{
 	public synchronized void clearSketch(){
 		points.clear();
 		sketch = null;
-		match = null;
 	}
 	public synchronized void draw(final Graphics g, final int width, final int height){
 		g.setColor(Color.WHITE);
@@ -37,7 +36,7 @@ public class Algorithm{
 			}
 			lastPt = pt;
 		}
-		if(match != null){
+		for(final Sample match : matches){
 			g.setColor(Color.GREEN);
 			lastPt = null;
 			for(final Point2D pt : match.getInversePoints()){
@@ -62,6 +61,10 @@ public class Algorithm{
 		g.drawRect(20,40,Sample.squareLength,Sample.squareLength);
 	}
 	public synchronized void match(){
-		match = Sample.match(points);
+		points.clear();
+		matches.add(Sample.match(points));
+	}
+	public List<Sample> getMatches(){
+		return matches;
 	}
 }
