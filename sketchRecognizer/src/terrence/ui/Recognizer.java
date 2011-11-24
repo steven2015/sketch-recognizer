@@ -1,14 +1,28 @@
 package terrence.ui;
 
 import java.applet.Applet;
+import java.awt.Button;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JScrollPane;
+
+import org.jbox2d.testbed.framework.TestList;
+import org.jbox2d.testbed.framework.TestbedController;
+import org.jbox2d.testbed.framework.TestbedModel;
+import org.jbox2d.testbed.framework.TestbedPanel;
+import org.jbox2d.testbed.framework.TestbedTest;
+import org.jbox2d.testbed.framework.j2d.TestPanelJ2D;
+import org.jbox2d.testbed.framework.j2d.TestbedSidePanel;
 
 import terrence.recognizer.interaction.dollar.Dollar;
 import terrence.recognizer.interaction.dollar.DollarListener;
@@ -20,10 +34,19 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 	int y;
 	int state;
 	
+	private TestbedSidePanel side;
+	private TestbedModel model;
+	private TestbedPanel panel;
+	private TestbedController controller;
+	
 	Dollar dollar = new Dollar(Dollar.GESTURES_DEFAULT);
 	String name = "";
 	double score = 0;
 	boolean ok = false;;
+
+	private Button cleanScreenBtn;
+//	private Button startAnimationBtn;
+//	private Button stopAnimationBtn;
 	
 	Image offScreen;
 	
@@ -37,12 +60,52 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 		setSize(800,600);
 		// steven 20111120 development on pc end
 		offScreen = createImage(getSize().width, getSize().height);
+	    model = new TestbedModel();
+	    panel = new TestPanelJ2D(model);
+	    TestList.populateModel(model);
+	    model.setDebugDraw(panel.getDebugDraw());
+	    controller = new TestbedController(model, panel);
+	    side = new TestbedSidePanel(model, controller);
+	    
+	    add((Component) panel, "Center");
+//	    add(new JScrollPane(side), "East");
+	    
+		// Terrence
+		initButtons();
 			
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
 		dollar.setListener(this);
 		dollar.setActive(true);
+		
+		controller.playTest(0);
+	    controller.start();
+	}
+	
+	private void initButtons(){
+		if(cleanScreenBtn == null)
+			cleanScreenBtn = new Button("Clean Screen");
+//		if(startAnimationBtn == null)
+//			startAnimationBtn = new Button("Start Animation");
+//		if(stopAnimationBtn == null)
+//			stopAnimationBtn = new Button("Stop Animation");
+		
+		cleanScreenBtn.setBounds(20,20,100,30);
+//		startAnimationBtn.setBounds(cleanScreenBtn.getBounds().x*2,20,100,30);
+//		stopAnimationBtn.setBounds(cleanScreenBtn.getBounds().x*3,20,100,30);
+		add(cleanScreenBtn);
+//		add(startAnimationBtn);
+//		add(stopAnimationBtn);
+		cleanScreenBtn.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Clean Screen
+				
+			}
+			
+		});
 	}
 	
 	public void mouseEntered(MouseEvent e) //mouse entered canvas
