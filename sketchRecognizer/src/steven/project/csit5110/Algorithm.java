@@ -60,9 +60,13 @@ public class Algorithm{
 		g.setColor(Color.BLACK);
 		g.drawRect(20,40,Sample.squareLength,Sample.squareLength);
 	}
-	public synchronized void match(){
+	public synchronized void clearScreen(){
 		points.clear();
+		matches.clear();
+	}
+	public synchronized void match(){
 		matches.add(Sample.match(points));
+		points.clear();
 	}
 	public List<Sample> getMatches(){
 		return matches;

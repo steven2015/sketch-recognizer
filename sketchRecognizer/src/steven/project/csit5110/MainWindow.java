@@ -72,6 +72,8 @@ public class MainWindow extends SFrame{
 		// add image to database
 		if(event.getKeyCode() == KeyEvent.VK_1){
 			algo.match();
+		}else if(event.getKeyCode() == KeyEvent.VK_2){
+			algo.clearScreen();
 		}
 	}
 }
