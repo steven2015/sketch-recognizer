@@ -7,10 +7,10 @@ import java.awt.geom.AffineTransform;
 import terrence.recognizer.interaction.dollar.Result;
 
 public class Rectangle implements FinalObject{
-	private final int x;
-	private final int y;
-	private final int width;
-	private final int height;
+	private final double x;
+	private final double y;
+	private final double width;
+	private final double height;
 	private final Color color;
 	private final double rotationAngle;
 
@@ -29,7 +29,7 @@ public class Rectangle implements FinalObject{
 		g.setColor(color);
 		g.translate(x,y);
 		g.rotate(rotationAngle);
-		g.fillRect(0,0,width,height);
+		g.fillRect(0,0,(int)width,(int)height);
 		g.setColor(bakColor);
 		g.setTransform(bakTransform);
 	}

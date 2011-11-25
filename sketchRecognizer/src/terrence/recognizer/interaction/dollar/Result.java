@@ -6,7 +6,7 @@ public class Result
 	public double Score;
 	public int Index;
 	// steven 20111120 bounding box start
-	public int[] bounds = new int[4];
+	public double[] bounds = new double[4];
 	public double bestAngleRadian;
 	// steven 20111120 bounding box end
 
@@ -20,7 +20,7 @@ public class Result
 		this.Index = index;
 	}
 	// steven 20111120 bounding box start
-	public Result(final String name, final double score, final int index, final int[] bounds, double bestAngle){
+	public Result(final String name, final double score, final int index, final double[] bounds, double bestAngle){
 		Name=name;
 		Score=score;
 		Index=index;

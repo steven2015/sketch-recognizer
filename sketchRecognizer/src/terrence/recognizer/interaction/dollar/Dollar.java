@@ -87,6 +87,15 @@ public class Dollar implements TouchListener
 //		System.out.println(x + " " + y + " " + points.size());
 	}	
 	
+	public void addPoint(float x, float y)
+	{
+		if (!active)
+			return;
+		
+		points.addElement(new Point(x, y));
+//		System.out.println(x + " " + y + " " + points.size());
+	}	
+	
 	public void recognize()
 	{
 		if (!active)
@@ -110,7 +119,7 @@ public class Dollar implements TouchListener
 		return recognizer.boundingBox;
 	}
 	
-	public int[] getBounds()
+	public double[] getBounds()
 	{
 		return recognizer.bounds;
 	}
@@ -156,6 +165,21 @@ public class Dollar implements TouchListener
 	}
 	
 	public void pointerDragged(int x, int y)
+	{
+		addPoint(x, y);
+	}
+	
+	public void pointerPressed(float x, float y)
+	{
+		clear();
+	}
+	
+	public void pointerReleased(float x, float y)
+	{
+		recognize();
+	}
+	
+	public void pointerDragged(float x, float y)
 	{
 		addPoint(x, y);
 	}
