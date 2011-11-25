@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import steven.math.transform.ITransform;
 import steven.math.transform.Rotation;
 import steven.math.transform.Scale;
@@ -26,6 +28,7 @@ public class Sample{
 	public static final int midBlurLength = blurLength / 2;
 	public static final int rotationCount = 100;
 	public static final List<Sample> samples = new ArrayList<Sample>();
+	public final Image image;
 
 	public Sample(final String id){
 		this.id = id;
@@ -36,12 +39,19 @@ public class Sample{
 				square[i][j] = 0;
 			}
 		}
+		image = null;
 	}
 	public Sample(final Sample sample, final List<ITransform> trans){
 		id = sample.id;
 		square = sample.square;
 		this.trans.addAll(trans);
 		this.points.addAll(sample.points);
+		image = null;
+	}
+	public Sample(final String id, final double[][] square, final Image image){
+		this.id = id;
+		this.square = square;
+		this.image = image;
 	}
 	protected static Sample createSample(final String id, final List<Point2D> points, final double radian){
 		final Sample sample = new Sample(id);
@@ -265,8 +275,8 @@ public class Sample{
 		samples.add(sample);
 		return sample;
 	}
-	public static synchronized Sample addSample(final String id, final Image image){
-		final Sample sample = createSample(id,null,0);
+	public static synchronized Sample addSample(final String id, final double[][] intensitys, final Image image){
+		final Sample sample = createSample(id,intensitys,image);
 		samples.add(sample);
 		return sample;
 	}
@@ -322,9 +332,20 @@ public class Sample{
 					e.printStackTrace();
 				}
 				final String[] segments = StringUtility.split(new String(buffer,0,count),",");
-				System.out.println(segments[0]);
-				System.out.println(segments[1]);
-				System.out.println(segments[2]);
+				final double[][] tmps = new double[squareLength][];
+				int k = 0;
+				for(int i = 0; i < squareLength; i++){
+					tmps[i] = new double[squareLength];
+					for(int j = 0; j < squareLength; j++){
+						tmps[i][j] = Double.parseDouble(segments[k + 3]);
+						k++;
+					}
+				}
+				try{
+					addSample(segments[0],tmps,ImageIO.read(new File(folderPath + segments[1])));
+				}catch(final Exception e){
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -360,5 +381,8 @@ public class Sample{
 			}
 		}
 		return error;
+	}
+	protected static Sample createSample(final String id, final double[][] intensitys, final Image image){
+		return new Sample(id,intensitys,image);
 	}
 }

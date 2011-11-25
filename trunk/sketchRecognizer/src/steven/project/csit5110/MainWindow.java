@@ -1,6 +1,6 @@
 package steven.project.csit5110;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -14,7 +14,7 @@ import steven.ui.SFrame;
 public class MainWindow extends SFrame{
 	private static final long serialVersionUID = 4361093881408047904L;
 	private final Image backImage;
-	private final Graphics backImageGraphic;
+	private final Graphics2D backImageGraphic;
 	private final int width;
 	private final int height;
 	private final Algorithm algo = new Algorithm();
@@ -28,7 +28,7 @@ public class MainWindow extends SFrame{
 	public MainWindow(final int width, final int height){
 		super(width,height);
 		backImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
-		backImageGraphic = backImage.getGraphics();
+		backImageGraphic = (Graphics2D)backImage.getGraphics();
 		this.width = width;
 		this.height = height;
 		setLocation(0,0);
