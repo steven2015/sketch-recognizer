@@ -17,7 +17,7 @@ public class Recognizer
 	
 	public Point centroid = new Point(0, 0);
 	public Rectangle boundingBox = new Rectangle(0, 0, 0, 0);
-	int bounds[] = { 0, 0, 0, 0 };
+	double bounds[] = { 0.0, 0.0, 0.0, 0.0 };
 	
 	Vector Templates = new Vector(NumTemplates);
 
@@ -108,10 +108,10 @@ public class Recognizer
 		points = Utils.ScaleToSquare(points, SquareSize);
 		points = Utils.TranslateToOrigin(points);
 	
-		bounds[0] = (int)boundingBox.X;
-		bounds[1] = (int)boundingBox.Y;
-		bounds[2] = (int)boundingBox.X + (int)boundingBox.Width;
-		bounds[3] = (int)boundingBox.Y + (int)boundingBox.Height;
+		bounds[0] = boundingBox.X;
+		bounds[1] = boundingBox.Y;
+		bounds[2] = boundingBox.X + boundingBox.Width;
+		bounds[3] = boundingBox.Y + boundingBox.Height;
 		
 		int t = 0;
 		
