@@ -254,6 +254,7 @@ public class Sample{
 			final Sample sample = samples.get(i);
 			for(int j = 0; j < rotationCount; j++){
 				final double error = sample.match(sketchs[j]);
+				System.out.println(sample.id + " " + error);
 				if(minError < 0 || error < minError){
 					minError = error;
 					sampleIndex = i;
@@ -276,7 +277,7 @@ public class Sample{
 		return sample;
 	}
 	public static synchronized Sample addSample(final String id, final double[][] intensitys, final Image image){
-		final Sample sample = createSample(id,intensitys,image);
+		final Sample sample = blur(createSample(id,intensitys,image));
 		samples.add(sample);
 		return sample;
 	}
