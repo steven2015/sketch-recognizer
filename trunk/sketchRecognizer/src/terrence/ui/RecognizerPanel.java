@@ -29,6 +29,7 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
+import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.testbed.framework.TestbedModel;
 import org.jbox2d.testbed.framework.TestbedPanel;
 import org.jbox2d.testbed.framework.TestbedTest;
@@ -245,9 +246,49 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 				body.createFixture(createRectangle(Math.abs(leftTop.x-rightBottom.x)/2.0f,Math.abs(leftTop.y-rightBottom.y)/2.0f), 0.2f);
 			}else if(result.Name.toLowerCase().startsWith("circle")){
 				float radius=(Math.abs(rightBottom.x-leftTop.x)/2.0f+Math.abs(rightBottom.y-leftTop.y)/2.0f)/2.0f;
-				body.createFixture(createCircle(Math.abs(radius)), 0.2f);
+				FixtureDef f=new FixtureDef();
+				f.shape=createCircle(Math.abs(radius));
+				f.density=0.2f;
+				f.restitution=0.5f;
+				body.createFixture(f);
 			}else if(result.Name.toLowerCase().startsWith("x")||result.Name.toLowerCase().startsWith("pigTail")||result.Name.toLowerCase().startsWith("delete")){
-				body.createFixture(createX(leftTop.x-position.x, leftTop.y-position.y, rightBottom.x-position.x, rightBottom.y-position.y), 0.1f);
+				float x1=leftTop.x-position.x;
+				float x2=leftTop.y-position.y;
+				float y1=rightBottom.x-position.x;
+				float y2=rightBottom.y-position.y;
+				float midx=(x1+x2)/2.0f;
+				float midy=(y1+y2)/2.0f;
+				x1-=midx;
+				y1-=midy;
+				x2-=midx;
+				y2-=midy;
+				midx=0;
+				midy=0;
+				float size=0.4f;
+				Vec2[] v=new Vec2[8];
+				v[0]=new Vec2(x1,y1);
+				v[1]=new Vec2(midx-size,midy);
+				v[2]=new Vec2(x1,y2);
+				v[3]=new Vec2(midx,midy-size);
+				v[4]=new Vec2(x2,y2);
+				v[5]=new Vec2(midx+size,midy);
+				v[6]=new Vec2(x2,y1);
+				v[7]=new Vec2(midx,midy+size);
+				PolygonShape tri1=new PolygonShape();
+				tri1.set(new Vec2[]{v[7],v[0],v[1]}, 3);
+				PolygonShape tri2=new PolygonShape();
+				tri2.set(new Vec2[]{v[1],v[2],v[3]}, 3);
+				PolygonShape tri3=new PolygonShape();
+				tri3.set(new Vec2[]{v[3],v[4],v[5]}, 3);
+				PolygonShape tri4=new PolygonShape();
+				tri4.set(new Vec2[]{v[5],v[6],v[7]}, 3);
+				PolygonShape rect=new PolygonShape();
+				rect.set(new Vec2[]{v[1],v[3],v[5],v[7]}, 4);
+				body.createFixture(tri1,0.2f);
+				body.createFixture(tri2,0.2f);
+				body.createFixture(tri3,0.2f);
+				body.createFixture(tri4,0.2f);
+				body.createFixture(rect,0.2f);
 			}
 			curTest.setBodies(body);
 		}
@@ -273,22 +314,5 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 		CircleShape circle = new CircleShape();
 		circle.m_radius = radius;
 		return circle;
-	}
-	private PolygonShape createX(float x1,float y1, float x2,float y2){
-		PolygonShape x=new PolygonShape();
-		float midx=(x1+x2)/2.0f;
-		float midy=(y1+y2)/2.0f;
-		float size=0.4f;
-		Vec2[] v=new Vec2[8];
-		v[0]=new Vec2(x1,y1);
-		v[1]=new Vec2(midx-size,midy);
-		v[2]=new Vec2(x1,y2);
-		v[3]=new Vec2(midx,midy-size);
-		v[4]=new Vec2(x2,y2);
-		v[5]=new Vec2(midx+size,midy);
-		v[6]=new Vec2(x2,y1);
-		v[7]=new Vec2(midx,midy+size);
-		x.set(v, 8);
-		return x;
 	}
 }
