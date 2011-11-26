@@ -215,6 +215,7 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 			if ((g != null) && dbImage != null) {
 				g.drawImage(dbImage, 0, 0, null);
 				Toolkit.getDefaultToolkit().sync();
+				dollar.render(g);
 				g.dispose();
 			}
 		} catch (AWTError e) {
@@ -234,7 +235,11 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 	}
 
 	private void addShape(Result result) {
-		Vec2 position = draw.getScreenToWorld((float)result.bounds[0], (float)result.bounds[1]);
+		Vec2 position = draw.getScreenToWorld((float)(result.bounds[0]+result.bounds[2])/2.0f, (float)(result.bounds[1]+result.bounds[3])/2.0f);
+		log.debug((float)(result.bounds[2]+result.bounds[0])/2.0f+" "+ (float)(result.bounds[3]+result.bounds[1])/2.0f);
+		log.debug(position.x+" "+position.y);
+		Vec2 leftTop=draw.getScreenToWorld((float)result.bounds[0],(float)result.bounds[1]);
+		Vec2 rightBottom=draw.getScreenToWorld((float)result.bounds[2],(float)result.bounds[3]);
 		PolyWorld curTest = (PolyWorld) model.getCurrTest();
 		if(curTest != null){
 			BodyDef bd = new BodyDef();
@@ -242,11 +247,16 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 			bd.position.set(position);
 			Body body = curTest.getWorld().createBody(bd);
 			if(result.Name.toLowerCase().startsWith("triangle")){
-				body.createFixture(createTriangle(-1.0f,1.0f,2.0f), 0.2f);
+				float bottom=Math.abs(leftTop.x-rightBottom.x)/2.0f;
+				float height=Math.abs(leftTop.y-rightBottom.y)/2.0f;
+				body.createFixture(createTriangle(-bottom,bottom,height), 0.2f);
 			}else if(result.Name.toLowerCase().startsWith("rectangle")){
-				body.createFixture(createRectangle(1.0f,1.0f), 0.2f);
+				body.createFixture(createRectangle(Math.abs(leftTop.x-rightBottom.x)/2.0f,Math.abs(leftTop.y-rightBottom.y)/2.0f), 0.2f);
 			}else if(result.Name.toLowerCase().startsWith("circle")){
-				body.createFixture(createCircle(1.0f), 0.2f);
+				float radius=(Math.abs(rightBottom.x-leftTop.x)/2.0f+Math.abs(rightBottom.y-leftTop.y)/2.0f)/2.0f;
+				log.debug(leftTop.x+" "+leftTop.y+" "+rightBottom.x+" "+rightBottom.y);
+				log.debug((float)(result.bounds[2]-result.bounds[0])/2.0f+" "+ (float)(result.bounds[3]-result.bounds[1])/2.0f);
+				body.createFixture(createCircle(Math.abs(radius)), 0.2f);
 			}
 			curTest.setBodies(body);
 		}
