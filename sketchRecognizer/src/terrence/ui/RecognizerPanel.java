@@ -213,11 +213,6 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 			Graphics g = this.getGraphics();
 			if ((g != null) && dbImage != null) {
 				g.drawImage(dbImage, 0, 0, null);
-				// synchronized(objects){
-				// for(FinalObject obj : objects){
-				// obj.render(g);
-				// }
-				// }
 				Toolkit.getDefaultToolkit().sync();
 				g.dispose();
 			}
