@@ -73,7 +73,7 @@ public class Dollar implements TouchListener
 		for (int i = 0; i < points.size()-1; i++)
 		{
 			p1 = (Point)points.elementAt(i);
-			p2 = (Point)points.elementAt(i+1);
+			p2 = (Point)points.elementAt(i+1);g.setColor(Color.RED);
 			g.drawLine((int)p1.X, (int)p1.Y, (int)p2.X, (int)p2.Y);
 		}		
 	}
