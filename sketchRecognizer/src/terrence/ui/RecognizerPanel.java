@@ -81,6 +81,9 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 		model = argModel;
 		updateSize(INIT_WIDTH, INIT_HEIGHT);
 		setPreferredSize(new Dimension(INIT_WIDTH, INIT_HEIGHT));
+		PolyWorld polyWorld = new PolyWorld();
+		model.clearTestList();
+		model.addTest(polyWorld);
 
 		// Sketch Listener
 		dollar.setListener(this);
