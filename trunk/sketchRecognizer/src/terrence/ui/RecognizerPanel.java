@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import terrence.recognizer.interaction.dollar.Dollar;
 import terrence.recognizer.interaction.dollar.DollarListener;
+import terrence.recognizer.interaction.dollar.Result;
 import terrence.recognizer.steven.FinalObject;
 
 public class RecognizerPanel extends JPanel implements TestbedPanel,
@@ -232,66 +233,48 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 		ok = score > 0.80;
 		if (ok) {
 			log.debug("Recognized Name:"+recognizedName+" Score:"+score);
-			if (recognizedName.toLowerCase().startsWith("rectangle")) {
-				PolygonShape rectangle = new PolygonShape();
-				float halfW = (float) ((float)(dollar.getResult().bounds[2] - dollar.getResult().bounds[0])/2.0);
-				float halfH = (float) ((float)(dollar.getResult().bounds[3] - dollar.getResult().bounds[1])/2.0);
-				
-				Vec2 worldCor = draw.getScreenToWorld((float)dollar.getResult().bounds[0], (float)dollar.getResult().bounds[1]);
-				Vec2 w = draw.getScreenToWorld(halfW, halfH);
-				rectangle.setAsBox(w.x/8,w.y/8);
-				float x = worldCor.x;
-				float y = worldCor.y;
-				addShape(x, y, rectangle);
-			}
-			if (recognizedName.toLowerCase().startsWith("circle")) {
-				CircleShape circle = new CircleShape();
-				float halfW = (float) ((float)(dollar.getResult().bounds[2] - dollar.getResult().bounds[0])/2.0);
-				float halfH = (float) ((float)(dollar.getResult().bounds[3] - dollar.getResult().bounds[1])/2.0);
-				
-				Vec2 worldCor = draw.getScreenToWorld((float)dollar.getResult().bounds[0], (float)dollar.getResult().bounds[1]);
-				Vec2 w = draw.getScreenToWorld(halfW, halfH);
-				circle.m_radius = w.x/8;
-				float x = worldCor.x;
-				float y = worldCor.y;
-				addShape(x, y, circle);
-			}
-			if (recognizedName.toLowerCase().startsWith("triangle")) {
-				PolygonShape triangle = new PolygonShape();
-				float halfW = (float) ((float)(dollar.getResult().bounds[2] - dollar.getResult().bounds[0])/2.0);
-				float halfH = (float) ((float)(dollar.getResult().bounds[3] - dollar.getResult().bounds[1])/2.0);
-				
-				Vec2 worldCor = draw.getScreenToWorld((float)dollar.getResult().bounds[0], (float)dollar.getResult().bounds[1]);
-				Vec2 w = draw.getScreenToWorld(halfW, halfH);
-				Vec2 vertices[] = new Vec2[3];
-				vertices[0] = new Vec2(-w.x/8, 0.0f);
-				vertices[1] = new Vec2(w.x/8, 0.0f);
-				vertices[2] = new Vec2(0.0f, w.y/8);
-				triangle.set(vertices, 3);
-				float x = worldCor.x;
-				float y = worldCor.y;
-				addShape(x, y, triangle);
-			}
+			addShape(dollar.getResult());
 		}
 	}
 
-	private void addShape(float positionX, float positionY, Shape shape) {
-		//if (model.getCurrTest().getClass().isInstance(PolyShapes.class)) {
-			PolyShapes curTest = (PolyShapes) model.getCurrTest();
-			if(curTest != null){
-//				curTest.Create(positionX, positionY, shape);
-				BodyDef bd = new BodyDef();
-				bd.type = BodyType.DYNAMIC;
-				bd.position.set(positionX, positionY);
-				Body body = curTest.getWorld().createBody(bd);
-				
-				PolygonShape tshape = new PolygonShape();
-				tshape.setAsBox(4.0f, 4.0f, new Vec2(0.0f, 0.0f), 0.0f);
-				body.createFixture(tshape, 0.2f);
-				
-				curTest.setBodies(body);
-
+	private void addShape(Result result) {
+		Vec2 position = draw.getScreenToWorld((float)result.bounds[0], (float)result.bounds[1]);
+		PolyShapes curTest = (PolyShapes) model.getCurrTest();
+		if(curTest != null){
+			BodyDef bd = new BodyDef();
+			bd.type = BodyType.DYNAMIC;
+			bd.position.set(position);
+			Body body = curTest.getWorld().createBody(bd);
+			if(result.Name.toLowerCase().startsWith("triangle")){
+				body.createFixture(createTriangle(-1.0f,1.0f,2.0f), 0.2f);
+			}else if(result.Name.toLowerCase().startsWith("rectangle")){
+				body.createFixture(createRectangle(1.0f,1.0f), 0.2f);
+			}else if(result.Name.toLowerCase().startsWith("circle")){
+				body.createFixture(createCircle(1.0f), 0.2f);
 			}
-		//}
+			curTest.setBodies(body);
+		}
+	}
+	
+	private PolygonShape createRectangle(float w, float h){
+		PolygonShape rectangle = new PolygonShape();
+		rectangle.setAsBox(w,h);
+		return rectangle;
+	}
+	
+	private PolygonShape createTriangle(float x1, float x2, float x3){
+		PolygonShape triangle = new PolygonShape();
+		Vec2 vertices[] = new Vec2[3];
+		vertices[0] = new Vec2(x1, 0.0f);
+		vertices[1] = new Vec2(x2, 0.0f);
+		vertices[2] = new Vec2(0.0f, x3);
+		triangle.set(vertices, 3);
+		return triangle;
+	}
+	
+	private CircleShape createCircle(float radius){
+		CircleShape circle = new CircleShape();
+		circle.m_radius = radius;
+		return circle;
 	}
 }
