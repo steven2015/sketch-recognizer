@@ -9,12 +9,9 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
@@ -25,20 +22,16 @@ import javax.swing.JPanel;
 import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Mat22;
 import org.jbox2d.common.OBBViewportTransform;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.testbed.framework.TestbedFrame;
+import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.testbed.framework.TestbedModel;
 import org.jbox2d.testbed.framework.TestbedPanel;
 import org.jbox2d.testbed.framework.TestbedTest;
-import org.jbox2d.testbed.framework.j2d.DebugDrawJ2D;
-import org.jbox2d.testbed.framework.j2d.TestPanelJ2D;
-import org.jbox2d.testbed.tests.PolyShapes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -236,8 +229,6 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 
 	private void addShape(Result result) {
 		Vec2 position = draw.getScreenToWorld((float)(result.bounds[0]+result.bounds[2])/2.0f, (float)(result.bounds[1]+result.bounds[3])/2.0f);
-		log.debug((float)(result.bounds[2]+result.bounds[0])/2.0f+" "+ (float)(result.bounds[3]+result.bounds[1])/2.0f);
-		log.debug(position.x+" "+position.y);
 		Vec2 leftTop=draw.getScreenToWorld((float)result.bounds[0],(float)result.bounds[1]);
 		Vec2 rightBottom=draw.getScreenToWorld((float)result.bounds[2],(float)result.bounds[3]);
 		PolyWorld curTest = (PolyWorld) model.getCurrTest();
@@ -254,9 +245,9 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 				body.createFixture(createRectangle(Math.abs(leftTop.x-rightBottom.x)/2.0f,Math.abs(leftTop.y-rightBottom.y)/2.0f), 0.2f);
 			}else if(result.Name.toLowerCase().startsWith("circle")){
 				float radius=(Math.abs(rightBottom.x-leftTop.x)/2.0f+Math.abs(rightBottom.y-leftTop.y)/2.0f)/2.0f;
-				log.debug(leftTop.x+" "+leftTop.y+" "+rightBottom.x+" "+rightBottom.y);
-				log.debug((float)(result.bounds[2]-result.bounds[0])/2.0f+" "+ (float)(result.bounds[3]-result.bounds[1])/2.0f);
 				body.createFixture(createCircle(Math.abs(radius)), 0.2f);
+			}else if(result.Name.toLowerCase().startsWith("x")||result.Name.toLowerCase().startsWith("pigTail")||result.Name.toLowerCase().startsWith("delete")){
+				body.createFixture(createX(leftTop.x-position.x, leftTop.y-position.y, rightBottom.x-position.x, rightBottom.y-position.y), 0.1f);
 			}
 			curTest.setBodies(body);
 		}
@@ -282,5 +273,22 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 		CircleShape circle = new CircleShape();
 		circle.m_radius = radius;
 		return circle;
+	}
+	private PolygonShape createX(float x1,float y1, float x2,float y2){
+		PolygonShape x=new PolygonShape();
+		float midx=(x1+x2)/2.0f;
+		float midy=(y1+y2)/2.0f;
+		float size=0.4f;
+		Vec2[] v=new Vec2[8];
+		v[0]=new Vec2(x1,y1);
+		v[1]=new Vec2(midx-size,midy);
+		v[2]=new Vec2(x1,y2);
+		v[3]=new Vec2(midx,midy-size);
+		v[4]=new Vec2(x2,y2);
+		v[5]=new Vec2(midx+size,midy);
+		v[6]=new Vec2(x2,y1);
+		v[7]=new Vec2(midx,midy+size);
+		x.set(v, 8);
+		return x;
 	}
 }
