@@ -319,6 +319,10 @@ public class Sample{
 		addSample("Right Triangle",points);
 	}
 	public static void loadSample(){
+		boolean flag=true;
+		if(flag){
+			return;
+		}
 		final String folderPath = Sample.class.getClassLoader().getResource(".").toExternalForm().substring(5) + "/steven/project/csit5110/sample/";
 		final File folder = new File(folderPath);
 		for(final File file : folder.listFiles()){
