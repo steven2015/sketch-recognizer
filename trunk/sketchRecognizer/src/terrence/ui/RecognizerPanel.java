@@ -237,7 +237,7 @@ public class RecognizerPanel extends JPanel implements TestbedPanel,
 
 	private void addShape(Result result) {
 		Vec2 position = draw.getScreenToWorld((float)result.bounds[0], (float)result.bounds[1]);
-		PolyShapes curTest = (PolyShapes) model.getCurrTest();
+		PolyWorld curTest = (PolyWorld) model.getCurrTest();
 		if(curTest != null){
 			BodyDef bd = new BodyDef();
 			bd.type = BodyType.DYNAMIC;
