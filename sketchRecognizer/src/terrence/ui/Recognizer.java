@@ -57,7 +57,7 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 	public void init() 
 	{
 		// steven 20111120 development on pc start
-		setSize(800,600);
+		//setSize(800,600);
 		// steven 20111120 development on pc end
 		offScreen = createImage(getSize().width, getSize().height);
 	    model = new TestbedModel();
