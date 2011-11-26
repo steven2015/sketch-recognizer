@@ -63,6 +63,8 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 	    model = new TestbedModel();
 	    panel = new RecognizerPanel(model);
 	    TestList.populateModel(model);
+	    PolyWorld polyWorld = new PolyWorld();
+		model.addTest(polyWorld);
 	    model.setDebugDraw(panel.getDebugDraw());
 	    controller = new TestbedController(model, panel);
 	    //side = new TestbedSidePanel(model, controller);
@@ -73,7 +75,9 @@ public class Recognizer extends Applet implements MouseListener, MouseMotionList
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
-		controller.playTest(0);
+//		controller.playTest(0);
+//	    controller.start();
+	    controller.playTest(model.getTestsSize()-1);
 	    controller.start();
 	}
 	
